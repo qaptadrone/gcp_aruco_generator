@@ -1,0 +1,4 @@
+numpy==1.22.2
+opencv-contrib-python==4.5.5.62
+opencv-python-headless==4.5.5.62
+svgwrite==1.4.1
