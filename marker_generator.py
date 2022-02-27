@@ -49,6 +49,156 @@ ARUCO_DICT = {
     "APRILTAG_36h11": cv2.aruco.DICT_APRILTAG_36h11,
 }
 
+SVG_COLORS = [
+    "aliceblue",
+    "antiquewhite",
+    "aqua",
+    "aquamarine",
+    "azure",
+    "beige",
+    "bisque",
+    "black",
+    "blanchedalmond",
+    "blue",
+    "blueviolet",
+    "brown",
+    "burlywood",
+    "cadetblue",
+    "chartreuse",
+    "chocolate",
+    "coral",
+    "cornflowerblue",
+    "cornsilk",
+    "crimson",
+    "cyan",
+    "darkblue",
+    "darkcyan",
+    "darkgoldenrod",
+    "darkgray",
+    "darkgreen",
+    "darkgrey",
+    "darkkhaki",
+    "darkmagenta",
+    "darkolivegreen",
+    "darkorange",
+    "darkorchid",
+    "darkred",
+    "darksalmon",
+    "darkseagreen",
+    "darkslateblue",
+    "darkslategray",
+    "darkslategrey",
+    "darkturquoise",
+    "darkviolet",
+    "deeppink",
+    "deepskyblue",
+    "dimgray",
+    "dimgrey",
+    "dodgerblue",
+    "firebrick",
+    "floralwhite",
+    "forestgreen",
+    "fuchsia",
+    "gainsboro",
+    "ghostwhite",
+    "gold",
+    "goldenrod",
+    "gray",
+    "grey",
+    "green",
+    "greenyellow",
+    "honeydew",
+    "hotpink",
+    "indianred",
+    "indigo",
+    "ivory",
+    "khaki",
+    "lavender",
+    "lavenderblush",
+    "lawngreen",
+    "lemonchiffon",
+    "lightblue",
+    "lightcoral",
+    "lightcyan",
+    "lightgoldenrodyellow",
+    "lightgray",
+    "lightgreen",
+    "lightgrey",
+    "lightpink",
+    "lightsalmon",
+    "lightseagreen",
+    "lightskyblue",
+    "lightslategray",
+    "lightslategrey",
+    "lightsteelblue",
+    "lightyellow",
+    "lime",
+    "limegreen",
+    "linen",
+    "magenta",
+    "maroon",
+    "mediumaquamarine",
+    "mediumblue",
+    "mediumorchid",
+    "mediumpurple",
+    "mediumseagreen",
+    "mediumslateblue",
+    "mediumspringgreen",
+    "mediumturquoise",
+    "mediumvioletred",
+    "midnightblue",
+    "mintcream",
+    "mistyrose",
+    "moccasin",
+    "navajowhite",
+    "navy",
+    "oldlace",
+    "olive",
+    "olivedrab",
+    "orange",
+    "orangered",
+    "orchid",
+    "palegoldenrod",
+    "palegreen",
+    "paleturquoise",
+    "palevioletred",
+    "papayawhip",
+    "peachpuff",
+    "peru",
+    "pink",
+    "plum",
+    "powderblue",
+    "purple",
+    "red",
+    "rosybrown",
+    "royalblue",
+    "saddlebrown",
+    "salmon",
+    "sandybrown",
+    "seagreen",
+    "seashell",
+    "sienna",
+    "silver",
+    "skyblue",
+    "slateblue",
+    "slategray",
+    "slategrey",
+    "snow",
+    "springgreen",
+    "steelblue",
+    "tan",
+    "teal",
+    "thistle",
+    "tomato",
+    "turquoise",
+    "violet",
+    "wheat",
+    "white",
+    "whitesmoke",
+    "yellow",
+    "yellowgreen",
+]
+
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser(
@@ -58,7 +208,11 @@ Generates ArUco Markers to be used as Grounds Control Points.
 Default configuration is sensible. Output is highly customizable.
 This tools creates SVG files that can be sent to a printer immediately.
 The size parameter is important.""",
-    epilog="For good size recommendations, please see http://www.agt.bme.hu/on_line/gsd_calc/gsd_calc.html .",
+    epilog="""
+For good size recommendations, please see http://www.agt.bme.hu/on_line/gsd_calc/gsd_calc.html .
+
+Colors that can be used are either RGB value in hexadecimal notation (with a leading #), an rgb-function (such as rgb(123,45,67) ) or named colors from the list at https://www.w3.org/TR/SVG11/types.html#ColorKeywords .
+""",
 )
 ap.add_argument(
     "-b",
@@ -181,8 +335,16 @@ border = 1 if args["border"] else 0
 margin_mm = args["margin"]
 alternate = args["center_alt"]
 
-# verify that the supplied ArUCo tag exists and is supported by
-# OpenCV
+for color in [white_color, watermark_color, id_color]:
+    # FIXME this should do a better job at checking the syntax of the color name
+    if not (color in SVG_COLORS or color.startswith("#") or color.startswith("rgb(")):
+        print(f"The given color {color} is not supported")
+        print(
+            "Please check the supported list at https://www.w3.org/TR/SVG11/types.html#ColorKeywords"
+        )
+        sys.exit(1)
+
+# verify that the supplied ArUCo tag exists and is supported by OpenCV
 if ARUCO_DICT.get(dict_name, None) is None:
     print(f"ArUCo tag of {dict_name} is not supported")
     sys.exit(1)
