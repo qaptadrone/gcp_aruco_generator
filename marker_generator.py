@@ -78,6 +78,14 @@ ap.add_argument(
     help="Alternative center mark. Creates a center mark that is not an opposite image of the surrounding pixels. Default: False",
 )
 ap.add_argument(
+    "-d",
+    "--dict",
+    type=str,
+    default="4X4_50",
+    metavar='"4X4_50"',
+    help=f"ArUCo dictionary to use, one of {', '.join(list(ARUCO_DICT.keys()))}. Default: \"4X4_50\"",
+)
+ap.add_argument(
     "--family",
     action="store_true",
     help="Generate the whole marker family (disregard the chosen id). Default: False",
@@ -133,14 +141,6 @@ ap.add_argument(
     help="Print the id in the corner of the marker. Default: False",
 )
 ap.add_argument(
-    "-t",
-    "--type",
-    type=str,
-    default="4X4_50",
-    metavar='"4X4_50"',
-    help=f"Type of ArUCo tag to generate, one of {', '.join(list(ARUCO_DICT.keys()))}. Default: \"4X4_50\"",
-)
-ap.add_argument(
     "--watermark",
     type=str,
     default=None,
@@ -171,7 +171,7 @@ ap.add_argument(
 args = vars(ap.parse_args())
 
 markersize = args["size"]
-dict_name = args["type"]
+dict_name = args["dict"]
 marker_id = args["id"]
 output_folder = args["output"]
 white_color = args["white_color"]
