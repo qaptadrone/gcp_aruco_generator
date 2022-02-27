@@ -23,6 +23,7 @@ import json
 import argparse
 import cv2
 import sys, os
+import re
 
 # define names of each possible ArUco tag OpenCV supports
 ARUCO_DICT = {
@@ -199,6 +200,8 @@ SVG_COLORS = [
     "yellowgreen",
 ]
 
+REGEX_COLOR = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$|^rgb\(\s*\d+,\d+,\d+\s*\)$|^rgb\(\s*\d+%,\d+%,\d+%\s*\)$"
+COMPILED_RE = re.compile(REGEX_COLOR)
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser(
@@ -336,8 +339,7 @@ margin_mm = args["margin"]
 alternate = args["center_alt"]
 
 for color in [white_color, watermark_color, id_color]:
-    # FIXME this should do a better job at checking the syntax of the color name
-    if not (color in SVG_COLORS or color.startswith("#") or color.startswith("rgb(")):
+    if not (color in SVG_COLORS or re.search(COMPILED_RE, color)):
         print(f"The given color {color} is not supported")
         print(
             "Please check the supported list at https://www.w3.org/TR/SVG11/types.html#ColorKeywords"
