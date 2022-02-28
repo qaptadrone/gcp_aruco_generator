@@ -377,7 +377,7 @@ pixcount = datawidth + border * 2 + margin * 2
 imagesize = round(pixsize_mm * pixcount)
 
 print(f"Total marker size is going to be {imagesize}mm")
-
+print(f"Ground Sampling Distance is a maximum of {round(markersize / ((datawidth + border * 2)*6), 1)}mm/pixels, fly accordingly")
 
 def addCenterMark(svg, circle_rad, pixcount, bits, datawidth, white_color, alternate):
     # svg.add(svg.circle(center=(pixcount / 2, pixcount / 2), r=circle_rad, fill="red"))
