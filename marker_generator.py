@@ -205,181 +205,6 @@ SVG_COLORS = [
 REGEX_COLOR = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$|^rgb\(\s*\d+,\d+,\d+\s*\)$|^rgb\(\s*\d+%,\d+%,\d+%\s*\)$"
 COMPILED_RE = re.compile(REGEX_COLOR)
 
-# construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser(
-    formatter_class=argparse.RawDescriptionHelpFormatter,
-    description="""
-Generates ArUco Markers to be used as Grounds Control Points.
-Default configuration is sensible. Output is highly customizable.
-This tools creates SVG files that can be sent to a printer immediately.
-The size parameter is important.""",
-    epilog="""
-For good size recommendations, please see http://www.agt.bme.hu/on_line/gsd_calc/gsd_calc.html .
-
-Colors that can be used are either RGB value in hexadecimal notation (with a leading #), an rgb-function (such as rgb(123,45,67) ) or named colors from the list at https://www.w3.org/TR/SVG11/types.html#ColorKeywords .
-""",
-)
-ap.add_argument(
-    "-b",
-    "--border",
-    action="store_true",
-    help="Add a border around the marker. Default: False",
-)
-ap.add_argument(
-    "-c",
-    "--center",
-    action="store_true",
-    help="Add a center mark to the generated marker. Default: False",
-)
-ap.add_argument(
-    "--center_alt",
-    action="store_true",
-    help="Alternative center mark. Creates a center mark that is not an opposite image of the surrounding pixels. Default: False",
-)
-ap.add_argument(
-    "-d",
-    "--dict",
-    type=str,
-    default="4X4_50",
-    metavar='"4X4_50"',
-    help=f"ArUCo dictionary to use, one of {', '.join(list(ARUCO_DICT.keys()))}. Default: \"4X4_50\"",
-)
-ap.add_argument(
-    "--family",
-    action="store_true",
-    help="Generate the whole marker family (disregard the chosen id). Default: False",
-)
-ap.add_argument(
-    "--family-count",
-    type=int,
-    default=None,
-    metavar=10,
-    help="Works with --family to generate a specific count of markers from a specific family. The maximum number of markers is defined by the chosen family. Default: None",
-)
-ap.add_argument(
-    "-i",
-    "--id",
-    type=int,
-    default=0,
-    metavar=0,
-    help="ID of ArUCo tag to generate. Default: 0",
-)
-ap.add_argument(
-    "--id-color",
-    type=str,
-    default="darkcyan",
-    metavar='"darkcyan"',
-    help='Color of the id text (if printed with --print-id). Can be any of the named SVG colors. Default: "darkcyan"',
-)
-ap.add_argument(
-    "--margin",
-    type=int,
-    default=50,
-    metavar=50,
-    help="Side margin in mm. Default: 50",
-)
-ap.add_argument(
-    "-o",
-    "--output",
-    type=str,
-    default="./",
-    metavar="./",
-    help="Path where the output image containing ArUCo marker will be created. Default: ./",
-)
-ap.add_argument(
-    "-s",
-    "--size",
-    type=int,
-    default=500,
-    metavar=500,
-    help="Size in mm of the marker to be created. This size does not take into account the margin. Default: 500",
-)
-ap.add_argument(
-    "--print-id",
-    action="store_true",
-    help="Print the id in the corner of the marker. Default: False",
-)
-ap.add_argument(
-    "--watermark",
-    type=str,
-    default=None,
-    metavar='"DO NO MOVE"',
-    help="Add a watermark around the marker on the four sides around the marker. Default: None",
-)
-ap.add_argument(
-    "--watermark-color",
-    type=str,
-    default="black",
-    metavar='"black"',
-    help='Color of the watermark text. Can be any of the named SVG colors. Default: "black"',
-)
-ap.add_argument(
-    "--watermark-sides",
-    type=str,
-    default=None,
-    metavar='"Side String"',
-    help="Change the watermark on the side of the marker to this string. Default: None",
-)
-ap.add_argument(
-    "--white-color",
-    type=str,
-    default="white",
-    metavar='"white"',
-    help='Color of the white part of the marker. Can be changed to improve contrast. Can be any of the named SVG colors. Default: "white"',
-)
-args = vars(ap.parse_args())
-
-markersize = args["size"]
-dict_name = args["dict"]
-marker_id = args["id"]
-output_folder = args["output"]
-white_color = args["white_color"]
-watermark_color = args["watermark_color"]
-id_color = args["id_color"]
-border = 1 if args["border"] else 0
-margin_mm = args["margin"]
-alternate = args["center_alt"]
-
-for color in [white_color, watermark_color, id_color]:
-    if not (color in SVG_COLORS or re.search(COMPILED_RE, color)):
-        print(f"The given color {color} is not supported")
-        print(
-            "Please check the supported list at https://www.w3.org/TR/SVG11/types.html#ColorKeywords"
-        )
-        sys.exit(1)
-
-# verify that the supplied ArUCo tag exists and is supported by OpenCV
-if ARUCO_DICT.get(dict_name, None) is None:
-    print(f"ArUCo tag of {dict_name} is not supported")
-    sys.exit(1)
-else:
-    # load the ArUCo dictionary
-    arucoDict = cv2.aruco.Dictionary_get(ARUCO_DICT[dict_name])
-
-if not os.path.exists(output_folder):
-    # create the path!
-    os.makedirs(output_folder)
-if args["family"]:
-    filepath = f"{output_folder}{dict_name}/"
-    if not os.path.exists(filepath):
-        # create the path!
-        os.makedirs(filepath)
-else:
-    filepath = f"{output_folder}{dict_name}_"
-
-
-datawidth = arucoDict.markerSize
-
-pixsize_mm = markersize / (datawidth + border * 2)
-
-margin = margin_mm / pixsize_mm
-
-pixcount = datawidth + border * 2 + margin * 2
-
-imagesize = round(pixsize_mm * pixcount)
-
-print(f"Total marker size is going to be {imagesize}mm")
-print(f"Ground Sampling Distance is a maximum of {round(markersize / ((datawidth + border * 2)*6), 1)}mm/pixels, fly accordingly")
 
 def addCenterMark(svg, circle_rad, pixcount, bits, datawidth, white_color, alternate):
     # svg.add(svg.circle(center=(pixcount / 2, pixcount / 2), r=circle_rad, fill="red"))
@@ -681,30 +506,208 @@ def addWatermarkTop(
     return pixels_group
 
 
-if args["family"]:
-    if args["family_count"]:
-        if args["family_count"] > len(arucoDict.bytesList):
+if __name__ == "__main__":
+    # construct the argument parser and parse the arguments
+    ap = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description="""
+    Generates ArUco Markers to be used as Grounds Control Points.
+    Default configuration is sensible. Output is highly customizable.
+    This tools creates SVG files that can be sent to a printer immediately.
+    The size parameter is important.""",
+        epilog="""
+    For good size recommendations, please see http://www.agt.bme.hu/on_line/gsd_calc/gsd_calc.html .
+
+    Colors that can be used are either RGB value in hexadecimal notation (with a leading #), an rgb-function (such as rgb(123,45,67) ) or named colors from the list at https://www.w3.org/TR/SVG11/types.html#ColorKeywords .
+    """,
+    )
+    ap.add_argument(
+        "-b",
+        "--border",
+        action="store_true",
+        help="Add a border around the marker. Default: False",
+    )
+    ap.add_argument(
+        "-c",
+        "--center",
+        action="store_true",
+        help="Add a center mark to the generated marker. Default: False",
+    )
+    ap.add_argument(
+        "--center_alt",
+        action="store_true",
+        help="Alternative center mark. Creates a center mark that is not an opposite image of the surrounding pixels. Default: False",
+    )
+    ap.add_argument(
+        "-d",
+        "--dict",
+        type=str,
+        default="4X4_50",
+        metavar='"4X4_50"',
+        help=f"ArUCo dictionary to use, one of {', '.join(list(ARUCO_DICT.keys()))}. Default: \"4X4_50\"",
+    )
+    ap.add_argument(
+        "--family",
+        action="store_true",
+        help="Generate the whole marker family (disregard the chosen id). Default: False",
+    )
+    ap.add_argument(
+        "--family-count",
+        type=int,
+        default=None,
+        metavar=10,
+        help="Works with --family to generate a specific count of markers from a specific family. The maximum number of markers is defined by the chosen family. Default: None",
+    )
+    ap.add_argument(
+        "-i",
+        "--id",
+        type=int,
+        default=0,
+        metavar=0,
+        help="ID of ArUCo tag to generate. Default: 0",
+    )
+    ap.add_argument(
+        "--id-color",
+        type=str,
+        default="darkcyan",
+        metavar='"darkcyan"',
+        help='Color of the id text (if printed with --print-id). Can be any of the named SVG colors. Default: "darkcyan"',
+    )
+    ap.add_argument(
+        "--margin",
+        type=int,
+        default=50,
+        metavar=50,
+        help="Side margin in mm. Default: 50",
+    )
+    ap.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        default="./",
+        metavar="./",
+        help="Path where the output image containing ArUCo marker will be created. Default: ./",
+    )
+    ap.add_argument(
+        "-s",
+        "--size",
+        type=int,
+        default=500,
+        metavar=500,
+        help="Size in mm of the marker to be created. This size does not take into account the margin. Default: 500",
+    )
+    ap.add_argument(
+        "--print-id",
+        action="store_true",
+        help="Print the id in the corner of the marker. Default: False",
+    )
+    ap.add_argument(
+        "--watermark",
+        type=str,
+        default=None,
+        metavar='"DO NO MOVE"',
+        help="Add a watermark around the marker on the four sides around the marker. Default: None",
+    )
+    ap.add_argument(
+        "--watermark-color",
+        type=str,
+        default="black",
+        metavar='"black"',
+        help='Color of the watermark text. Can be any of the named SVG colors. Default: "black"',
+    )
+    ap.add_argument(
+        "--watermark-sides",
+        type=str,
+        default=None,
+        metavar='"Side String"',
+        help="Change the watermark on the side of the marker to this string. Default: None",
+    )
+    ap.add_argument(
+        "--white-color",
+        type=str,
+        default="white",
+        metavar='"white"',
+        help='Color of the white part of the marker. Can be changed to improve contrast. Can be any of the named SVG colors. Default: "white"',
+    )
+    args = vars(ap.parse_args())
+
+    markersize = args["size"]
+    dict_name = args["dict"]
+    marker_id = args["id"]
+    output_folder = args["output"]
+    white_color = args["white_color"]
+    watermark_color = args["watermark_color"]
+    id_color = args["id_color"]
+    border = 1 if args["border"] else 0
+    margin_mm = args["margin"]
+    alternate = args["center_alt"]
+
+    for color in [white_color, watermark_color, id_color]:
+        if not (color in SVG_COLORS or re.search(COMPILED_RE, color)):
+            print(f"The given color {color} is not supported")
             print(
-                f"The chosen family count ({args['family_count']}) is bigger than the available markers in the chosen dictionary ({len(arucoDict.bytesList)})."
+                "Please check the supported list at https://www.w3.org/TR/SVG11/types.html#ColorKeywords"
             )
-            print(
-                f"The the marker count will be limited to {len(arucoDict.bytesList)}."
-            )
-            marker_count = len(arucoDict.bytesList)
+            sys.exit(1)
+
+    # verify that the supplied ArUCo tag exists and is supported by OpenCV
+    if ARUCO_DICT.get(dict_name, None) is None:
+        print(f"ArUCo tag of {dict_name} is not supported")
+        sys.exit(1)
+    else:
+        # load the ArUCo dictionary
+        arucoDict = cv2.aruco.Dictionary_get(ARUCO_DICT[dict_name])
+
+    if not os.path.exists(output_folder):
+        # create the path!
+        os.makedirs(output_folder)
+    if args["family"]:
+        filepath = f"{output_folder}{dict_name}/"
+        if not os.path.exists(filepath):
+            # create the path!
+            os.makedirs(filepath)
+    else:
+        filepath = f"{output_folder}{dict_name}_"
+
+    datawidth = arucoDict.markerSize
+
+    pixsize_mm = markersize / (datawidth + border * 2)
+
+    margin = margin_mm / pixsize_mm
+
+    pixcount = datawidth + border * 2 + margin * 2
+
+    imagesize = round(pixsize_mm * pixcount)
+
+    print(f"Total marker size is going to be {imagesize}mm")
+    print(
+        f"Ground Sampling Distance is a maximum of {round(markersize / ((datawidth + border * 2)*6), 1)}mm/pixels, fly accordingly"
+    )
+
+    if args["family"]:
+        if args["family_count"]:
+            if args["family_count"] > len(arucoDict.bytesList):
+                print(
+                    f"The chosen family count ({args['family_count']}) is bigger than the available markers in the chosen dictionary ({len(arucoDict.bytesList)})."
+                )
+                print(
+                    f"The the marker count will be limited to {len(arucoDict.bytesList)}."
+                )
+                marker_count = len(arucoDict.bytesList)
+            else:
+                print(
+                    f"You chose to create {args['family_count']} markers. Those can be found in the folder {filepath} ."
+                )
+                marker_count = args["family_count"]
         else:
             print(
-                f"You chose to create {args['family_count']} markers. Those can be found in the folder {filepath} ."
+                f"You chose to create {len(arucoDict.bytesList)} markers. Those can be found in the folder {filepath} ."
             )
-            marker_count = args["family_count"]
+            marker_count = len(arucoDict.bytesList)
+        for marker_id in range(marker_count):
+            generate_marker(marker_id)
     else:
         print(
-            f"You chose to create {len(arucoDict.bytesList)} markers. Those can be found in the folder {filepath} ."
+            f"Your marker has been created and is available here {filepath}{marker_id}.svg ."
         )
-        marker_count = len(arucoDict.bytesList)
-    for marker_id in range(marker_count):
         generate_marker(marker_id)
-else:
-    print(
-        f"Your marker has been created and is available here {filepath}{marker_id}.svg ."
-    )
-    generate_marker(marker_id)
