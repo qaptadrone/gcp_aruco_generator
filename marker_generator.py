@@ -1,4 +1,4 @@
-#!/bin/python3
+#!./venv/bin/python3
 
 # Copyright (c) 2022 Romain Bazile
 #
@@ -24,6 +24,8 @@ import argparse
 import cv2
 import sys, os
 import re
+import shapely.geometry
+import shapely.ops
 
 # define names of each possible ArUco tag OpenCV supports
 ARUCO_DICT = {
@@ -454,19 +456,50 @@ def alternate_center_mark(svg, circle_rad, pixcount, white_color):
 
 def createPixels(svg, bits, datawidth, border, margin, white_color):
     pixels_group = svg.g()
+    polygons = []
     for i in range(datawidth):
         for j in range(datawidth):
             color = white_color if bits[i * datawidth + j] else "black"
             if not border or color == white_color:
-                pixels_group.add(
-                    svg.rect(
-                        insert=(j + border + margin, i + border + margin),
-                        size=(1, 1),
-                        fill=color,
-                        stroke=color,
-                        stroke_width=0.0001,
+                # pixels_group.add(
+                #     svg.rect(
+                #         insert=(j + border + margin, i + border + margin),
+                #         size=(1, 1),
+                #         fill=color,
+                #         stroke=color,
+                #         stroke_width=0.0001,
+                #     )
+                # )
+                polygons.append(
+                    shapely.geometry.Polygon(
+                        [
+                            (j + border + margin + 1, i + border + margin + 1),
+                            (j + border + margin, i + border + margin + 1),
+                            (j + border + margin, i + border + margin),
+                            (j + border + margin + 1, i + border + margin),
+                        ]
                     )
                 )
+    shape = shapely.ops.unary_union(polygons)
+    if isinstance(shape, shapely.geometry.multipolygon.MultiPolygon):
+        for polygon in shape.geoms:
+            pixels_group.add(
+                svg.polygon(
+                    points=polygon.exterior.coords,
+                    fill=white_color,
+                    stroke=white_color,
+                    stroke_width=0.0001,
+                )
+            )
+    else:
+        pixels_group.add(
+            svg.polygon(
+                points=shape.exterior.coords,
+                fill=white_color,
+                stroke=white_color,
+                stroke_width=0.0001,
+            )
+        )
     return pixels_group
 
 

@@ -156,6 +156,4 @@ functionality, you are very welcome to do so!
 Here are some functionalities I'd like to develop for this tool. Suggestions are
 welcome!
 
-- Create polygon(s) instead of individual squares for the marker pixels
 - Add direct to PDF output
-- Add several calculation regarding GSD and minimal recommended marker size
