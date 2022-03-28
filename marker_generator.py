@@ -284,17 +284,7 @@ def createPixels(svg, bits, datawidth, border, margin, white_color):
     polygons = []
     for i in range(datawidth):
         for j in range(datawidth):
-            color = white_color if bits[i * datawidth + j] else "black"
-            if not border or color == white_color:
-                # pixels_group.add(
-                #     svg.rect(
-                #         insert=(j + border + margin, i + border + margin),
-                #         size=(1, 1),
-                #         fill=color,
-                #         stroke=color,
-                #         stroke_width=0.0001,
-                #     )
-                # )
+            if not border or bits[i * datawidth + j]:
                 polygons.append(
                     shapely.geometry.Polygon(
                         [
@@ -312,8 +302,6 @@ def createPixels(svg, bits, datawidth, border, margin, white_color):
                 svg.polygon(
                     points=polygon.exterior.coords,
                     fill=white_color,
-                    stroke=white_color,
-                    stroke_width=0.0001,
                 )
             )
     else:
@@ -321,8 +309,6 @@ def createPixels(svg, bits, datawidth, border, margin, white_color):
             svg.polygon(
                 points=shape.exterior.coords,
                 fill=white_color,
-                stroke=white_color,
-                stroke_width=0.0001,
             )
         )
     return pixels_group
