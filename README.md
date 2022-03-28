@@ -136,7 +136,8 @@ markers in your pictures.
 
 ## Inspirations
 This project is similar to those others tools (yet different from them in
-several ways):
+several ways, mainly in that this tool creates a vectorized marker instead of
+a png):
 
 - The original inspiration: [arucogen](https://github.com/okalachev/arucogen)
 - Another generator: [aruco-generator](https://github.com/fdcl-gwu/aruco_generator)
@@ -156,4 +157,6 @@ functionality, you are very welcome to do so!
 Here are some functionalities I'd like to develop for this tool. Suggestions are
 welcome!
 
-- Add direct to PDF output
+- Add direct to PDF output (with [cairoSVG](https://cairosvg.org/documentation/))
+- Add recommended parameters for FindGCP
+- Add a GUI and cross platform capabilities
