@@ -29,28 +29,28 @@ import shapely.ops
 
 # define names of each possible ArUco tag OpenCV supports
 ARUCO_DICT = {
-    "4X4_50": cv2.aruco.DICT_4X4_50,
-    "4X4_100": cv2.aruco.DICT_4X4_100,
-    "4X4_250": cv2.aruco.DICT_4X4_250,
-    "4X4_1000": cv2.aruco.DICT_4X4_1000,
-    "5X5_50": cv2.aruco.DICT_5X5_50,
-    "5X5_100": cv2.aruco.DICT_5X5_100,
-    "5X5_250": cv2.aruco.DICT_5X5_250,
-    "5X5_1000": cv2.aruco.DICT_5X5_1000,
-    "6X6_50": cv2.aruco.DICT_6X6_50,
-    "6X6_100": cv2.aruco.DICT_6X6_100,
-    "6X6_250": cv2.aruco.DICT_6X6_250,
-    "6X6_1000": cv2.aruco.DICT_6X6_1000,
-    "7X7_50": cv2.aruco.DICT_7X7_50,
-    "7X7_100": cv2.aruco.DICT_7X7_100,
-    "7X7_250": cv2.aruco.DICT_7X7_250,
-    "7X7_1000": cv2.aruco.DICT_7X7_1000,
-    "ARUCO_ORIGINAL": cv2.aruco.DICT_ARUCO_ORIGINAL,
-    "APRILTAG_16h5": cv2.aruco.DICT_APRILTAG_16h5,
-    "APRILTAG_25h9": cv2.aruco.DICT_APRILTAG_25h9,
-    "APRILTAG_36h10": cv2.aruco.DICT_APRILTAG_36h10,
-    "APRILTAG_36h11": cv2.aruco.DICT_APRILTAG_36h11,
-    "ARUCO_MIP_36h12": cv2.aruco.DICT_ARUCO_MIP_36h12,
+    "4x4_50": cv2.aruco.DICT_4X4_50,
+    "4x4_100": cv2.aruco.DICT_4X4_100,
+    "4x4_250": cv2.aruco.DICT_4X4_250,
+    "4x4_1000": cv2.aruco.DICT_4X4_1000,
+    "5x5_50": cv2.aruco.DICT_5X5_50,
+    "5x5_100": cv2.aruco.DICT_5X5_100,
+    "5x5_250": cv2.aruco.DICT_5X5_250,
+    "5x5_1000": cv2.aruco.DICT_5X5_1000,
+    "6x6_50": cv2.aruco.DICT_6X6_50,
+    "6x6_100": cv2.aruco.DICT_6X6_100,
+    "6x6_250": cv2.aruco.DICT_6X6_250,
+    "6x6_1000": cv2.aruco.DICT_6X6_1000,
+    "7x7_50": cv2.aruco.DICT_7X7_50,
+    "7x7_100": cv2.aruco.DICT_7X7_100,
+    "7x7_250": cv2.aruco.DICT_7X7_250,
+    "7x7_1000": cv2.aruco.DICT_7X7_1000,
+    "aruco_original": cv2.aruco.DICT_ARUCO_ORIGINAL,
+    "apriltag_16h5": cv2.aruco.DICT_APRILTAG_16h5,
+    "apriltag_25h9": cv2.aruco.DICT_APRILTAG_25h9,
+    "apriltag_36h10": cv2.aruco.DICT_APRILTAG_36h10,
+    "apriltag_36h11": cv2.aruco.DICT_APRILTAG_36h11,
+    "aruco_mip_36h12": cv2.aruco.DICT_ARUCO_MIP_36h12,
 }
 
 SVG_COLORS = [
@@ -541,7 +541,7 @@ if __name__ == "__main__":
         type=str,
         default="4X4_50",
         metavar='"4X4_50"',
-        help=f"ArUCo dictionary to use, one of {', '.join(list(ARUCO_DICT.keys()))}. Default: \"4X4_50\"",
+        help=f"ArUCo dictionary to use, one of {', '.join(list(ARUCO_DICT.keys()))}. Default: \"4x4_50\"",
     )
     ap.add_argument(
         "--family",
@@ -648,7 +648,7 @@ if __name__ == "__main__":
             sys.exit(1)
 
     # verify that the supplied ArUCo tag exists and is supported by OpenCV
-    if ARUCO_DICT.get(dict_name, None) is None:
+    if ARUCO_DICT.get(dict_name.lower(), None) is None:
         print(f"ArUCo tag type {dict_name} is not supported")
         sys.exit(1)
     else:

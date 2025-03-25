@@ -21,7 +21,7 @@ easily.
 
 The complete list of parameters is as follows:
 ```
-usage: marker_generator.py [-h] [-b] [-c] [--center_alt] [-d "4X4_50"] [--family] [--family-count 10] [-i 0]
+usage: marker_generator.py [-h] [-b] [-c] [--center_alt] [-d "4x4_50"] [--family] [--family-count 10] [-i 0]
                            [--id-color "darkcyan"] [--margin 50] [-o ./] [-s 500] [--print-id]
                            [--watermark "DO NO MOVE"] [--watermark-color "black"]
                            [--watermark-sides "Side String"] [--white-color "white"]
@@ -33,14 +33,13 @@ usage: marker_generator.py [-h] [-b] [-c] [--center_alt] [-d "4X4_50"] [--family
 
 options:
   -h, --help            show this help message and exit
-  -b, --border          Add a border around the marker. Default: False
   -c, --center          Add a center mark to the generated marker. Default: False
   --center_alt          Alternative center mark. Creates a center mark that is not an opposite image of the
                         surrounding pixels. Default: False
-  -d, --dict "4X4_50"   ArUCo dictionary to use, one of 4X4_50, 4X4_100, 4X4_250, 4X4_1000, 5X5_50, 5X5_100,
-                        5X5_250, 5X5_1000, 6X6_50, 6X6_100, 6X6_250, 6X6_1000, 7X7_50, 7X7_100, 7X7_250,
-                        7X7_1000, ARUCO_ORIGINAL, APRILTAG_16h5, APRILTAG_25h9, APRILTAG_36h10,
-                        APRILTAG_36h11, ARUCO_MIP_36h12. Default: "4X4_50"
+  -d, --dict "4x4_50"   ArUCo dictionary to use, one of 4x4_50, 4x4_100, 4x4_250, 4x4_1000, 5x5_50, 5x5_100,
+                        5x5_250, 5x5_1000, 6x6_50, 6x6_100, 6x6_250, 6x6_1000, 7x7_50, 7x7_100, 7x7_250,
+                        7x7_1000, aruco_original, apriltag_16h5, apriltag_25h9, apriltag_36h10,
+                        apriltag_36h11, aruco_mip_36h12. Default: "4x4_50"
   --family              Generate the whole marker family (disregard the chosen id). Default: False
   --family-count 10     Works with --family to generate a specific count of markers from a specific family.
                         The maximum number of markers is defined by the chosen family. Default: None
