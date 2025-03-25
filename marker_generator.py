@@ -50,6 +50,7 @@ ARUCO_DICT = {
     "APRILTAG_25h9": cv2.aruco.DICT_APRILTAG_25h9,
     "APRILTAG_36h10": cv2.aruco.DICT_APRILTAG_36h10,
     "APRILTAG_36h11": cv2.aruco.DICT_APRILTAG_36h11,
+    "ARUCO_MIP_36h12": cv2.aruco.DICT_ARUCO_MIP_36h12,
 }
 
 SVG_COLORS = [
@@ -202,7 +203,7 @@ SVG_COLORS = [
     "yellowgreen",
 ]
 
-REGEX_COLOR = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$|^rgb\(\s*\d+,\d+,\d+\s*\)$|^rgb\(\s*\d+%,\d+%,\d+%\s*\)$"
+REGEX_COLOR = r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$|^rgb\(\s*\d+,\d+,\d+\s*\)$|^rgb\(\s*\d+%,\d+%,\d+%\s*\)$"
 COMPILED_RE = re.compile(REGEX_COLOR)
 
 
@@ -642,7 +643,7 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
         # load the ArUCo dictionary
-        arucoDict = cv2.aruco.Dictionary_get(ARUCO_DICT[dict_name])
+        arucoDict = cv2.aruco.getPredefinedDictionary(ARUCO_DICT[dict_name])
 
     if not os.path.exists(output_folder):
         # create the path!
