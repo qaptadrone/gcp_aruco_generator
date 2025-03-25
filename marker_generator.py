@@ -539,8 +539,8 @@ if __name__ == "__main__":
         "-d",
         "--dict",
         type=str,
-        default="4X4_50",
-        metavar='"4X4_50"',
+        default="4x4_50",
+        metavar='"4x4_50"',
         help=f"ArUCo dictionary to use, one of {', '.join(list(ARUCO_DICT.keys()))}. Default: \"4x4_50\"",
     )
     ap.add_argument(
