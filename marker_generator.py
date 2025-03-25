@@ -312,6 +312,13 @@ def createPixels(svg, bits, datawidth, border, margin, white_color):
                 fill=white_color,
             )
         )
+        for hole in shape.interiors:
+            pixels_group.add(
+                svg.polygon(
+                    points=hole.coords,
+                    fill="black",
+                )
+            )
     return pixels_group
 
 
