@@ -47,7 +47,7 @@ options:
   --id-color "darkcyan"
                         Color of the id text (if printed with --print-id). Can be any of the named SVG
                         colors. Default: "darkcyan"
-  --margin 50           Side margin in mm. Default: 50
+  -m, --margin 50       Side margin in mm. Default: 50
   -o, --output ./       Path where the output image containing ArUCo marker will be created. Default: ./
   -s, --size 500        Size in mm of the marker to be created. This size does not take into account the
                         margin. Default: 500

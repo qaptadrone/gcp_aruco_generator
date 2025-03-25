@@ -571,6 +571,7 @@ if __name__ == "__main__":
         help='Color of the id text (if printed with --print-id). Can be any of the named SVG colors. Default: "darkcyan"',
     )
     ap.add_argument(
+        "-m",
         "--margin",
         type=int,
         default=50,
