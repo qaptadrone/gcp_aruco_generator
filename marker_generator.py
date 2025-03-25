@@ -1,4 +1,4 @@
-#!./venv/bin/python3
+#!/usr/bin/env python3
 
 # Copyright (c) 2022 Romain Bazile
 #
@@ -285,7 +285,7 @@ def createPixels(svg, bits, datawidth, border, margin, white_color):
     polygons = []
     for i in range(datawidth):
         for j in range(datawidth):
-            if not border or bits[i * datawidth + j]:
+            if bits[i * datawidth + j]:
                 polygons.append(
                     shapely.geometry.Polygon(
                         [
@@ -305,6 +305,13 @@ def createPixels(svg, bits, datawidth, border, margin, white_color):
                     fill=white_color,
                 )
             )
+            for hole in polygon.interiors:
+                pixels_group.add(
+                    svg.polygon(
+                        points=hole.coords,
+                        fill="black",
+                    )
+                )
     else:
         pixels_group.add(
             svg.polygon(
@@ -352,7 +359,10 @@ def addId(svg, margin, pixcount, id_color, marker_id):
 
 
 def generate_marker(marker_id):
-    bytes = arucoDict.bytesList[marker_id][0]
+    bytes = []
+    for element in arucoDict.bytesList[marker_id]:
+        for byte in element:
+            bytes.append(byte)
     bits = []
     bitsCount = datawidth * datawidth
     # Parse marker's bytes
@@ -377,15 +387,14 @@ def generate_marker(marker_id):
         )
     )
 
-    # Border if necessary
-    if border:
-        svg.add(
-            svg.rect(
-                (margin, margin),
-                (datawidth + border * 2, datawidth + border * 2),
-                fill="black",
-            )
+    # Border is necessary
+    svg.add(
+        svg.rect(
+            (margin, margin),
+            (datawidth + border * 2, datawidth + border * 2),
+            fill="black",
         )
+    )
 
     svg.add(createPixels(svg, bits, datawidth, border, margin, white_color))
 
@@ -516,12 +525,6 @@ if __name__ == "__main__":
     """,
     )
     ap.add_argument(
-        "-b",
-        "--border",
-        action="store_true",
-        help="Add a border around the marker. Default: False",
-    )
-    ap.add_argument(
         "-c",
         "--center",
         action="store_true",
@@ -632,9 +635,9 @@ if __name__ == "__main__":
     white_color = args["white_color"]
     watermark_color = args["watermark_color"]
     id_color = args["id_color"]
-    border = 1 if args["border"] else 0
     margin_mm = args["margin"]
     alternate = args["center_alt"]
+    border = 1
 
     for color in [white_color, watermark_color, id_color]:
         if not (color in SVG_COLORS or re.search(COMPILED_RE, color)):
@@ -646,7 +649,7 @@ if __name__ == "__main__":
 
     # verify that the supplied ArUCo tag exists and is supported by OpenCV
     if ARUCO_DICT.get(dict_name, None) is None:
-        print(f"ArUCo tag of {dict_name} is not supported")
+        print(f"ArUCo tag type {dict_name} is not supported")
         sys.exit(1)
     else:
         # load the ArUCo dictionary
