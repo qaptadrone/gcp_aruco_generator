@@ -5,7 +5,8 @@ markers based on the [ArUCo
 specification](https://www.uco.es/investiga/grupos/ava/node/26).
 
 
-![Marker example](example.png)
+![Marker example](docs/example.png)
+![Script demo](docs/demo.gif)
 
 
 This will create an SVG file, with a real sizing of the image (that is if you
@@ -21,7 +22,7 @@ easily.
 
 The complete list of parameters is as follows:
 ```
-usage: marker_generator.py [-h] [-b] [-c] [--center_alt] [-d "4x4_50"] [--family] [--family-count 10] [-i 0]
+usage: marker_generator.py [-h] [-c] [--center_alt] [-d "4x4_50"] [--family] [--family-count 10] [-i 0]
                            [--id-color "darkcyan"] [--margin 50] [-o ./] [-s 500] [--print-id]
                            [--watermark "DO NO MOVE"] [--watermark-color "black"]
                            [--watermark-sides "Side String"] [--white-color "white"]
@@ -89,7 +90,7 @@ pip3 install -r requirements.txt
 From this point on, the use of this tool is quite simple. You just type the
 command you need:
 ```bash
-./marker_generator.py -c -b --print-id --id 1
+./marker_generator.py -c --print-id --id 1
 ```
 
 Once you're done, just deactivate the virtual environment:
@@ -103,7 +104,7 @@ If you need to create more markers, or use a different dictionary, you will
 need to activate the virtual environment again:
 ```bash
 source venv/bin/activate
-./marker_generator.py -c -b --print-id -s 800 --id 23
+./marker_generator.py -c --print-id -s 800 --id 23
 ```
 
 Once again, do not forget to deactivate the environment once you're done:
