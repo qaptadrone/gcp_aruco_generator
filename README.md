@@ -142,6 +142,8 @@ functionality, you are very welcome to do so!
 Here are some functionalities I'd like to develop for this tool. Suggestions are
 welcome!
 
+- Fix issue with center mark not working consistently (issue when there is a pixel right in the center with 5x5, 7x7, etc)
+- Create package for pip package
 - Add direct to PDF output (with [cairoSVG](https://cairosvg.org/documentation/))
 - Add recommended parameters for FindGCP
 - Add a GUI and cross platform capabilities
