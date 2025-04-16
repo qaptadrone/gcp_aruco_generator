@@ -1,0 +1,29 @@
+[project]
+    name = "gcp-aruco-generator"
+    version = "1.2.0"
+    requires-python = ">=3.13"
+    dependencies = [
+        "numpy~=2.2",
+        "opencv-contrib-python~=4.11",
+        "opencv-python-headless~=4.11",
+        "shapely~=2.0",
+        "svgwrite~=1.4",
+    ]
+    authors = [{ name = "Romain Bazile", email = "romain@bazile.io" }]
+    description = "Tool to create SVG ArUCo markers"
+    readme = "README.md"
+    license = "GPL-3.0-or-later"
+    keywords = ["gcp", "aruco", "marker", "generator"]
+    classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Programming Language :: Python :: 3",
+        "Environment :: Console",
+        "Topic :: Scientific/Engineering",
+    ]
+
+    [project.urls]
+        Homepage      = "https://www.github.com/gromain/gcp_aruco_generator"
+        Documentation = "https://www.github.com/gromain/gcp_aruco_generator/README.md"
+        Repository    = "https://www.github.com/gromain/gcp_aruco_generator.git"
